@@ -1,0 +1,6 @@
+53ff6c066667574826092267
+9ec00f18f28d31743d5b79c82bec30e457094087
+
+
+curl -G https://api.spark.io/v1/devices/53ff6c066667574826092267/temperature \
+  -d access_token=9ec00f18f28d31743d5b79c82bec30e457094087
