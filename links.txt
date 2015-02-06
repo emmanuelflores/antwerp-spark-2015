@@ -14,3 +14,10 @@ http://docs.spark.io/cli/
 //Clouded IDE
 http://docs.spark.io/build/
 
+//Colors
+http://support.spark.io/hc/en-us/articles/203175210-What-do-the-different-colors-of-the-Spark-Core-LED-mean-
+
+//Support
+http://support.spark.io/hc/en-us
+
+
