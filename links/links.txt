@@ -21,3 +21,11 @@ http://support.spark.io/hc/en-us/articles/203175210-What-do-the-different-colors
 http://support.spark.io/hc/en-us
 
 
+//Examples
+https://github.com/higepon/Spark-Core-Examples/tree/master/8.Email%20Me
+https://github.com/higepon/Spark-Core-Examples
+http://d.hatena.ne.jp/higepon/20140909/1410229118
+https://www.hackster.io/spark
+https://community.spark.io/t/tutorial-spark-variable-and-function-on-one-web-page/4181
+http://blog.ubidots.com/measure-temperature-and-humidity-with-your-spark-core
+http://lelylan.github.io/lab-projects/spark-core-light/
