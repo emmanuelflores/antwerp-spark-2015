@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spark Slider Background</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- To make a #spark id div fullscreen -->
+    <style type="text/css">
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      #spark {
+        min-height: 100%; 
+      }
+    </style>
+
+  </head>
+  <body>
+
+
+<div id="spark" style="background-color:color">
+&nbsp;
+</div>
+           
+  </body>
+
+  <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  
+  <script type='text/javascript' src='js/tinycolor.js'>
+  //allows us to use HSL colours, making it easier to go over a spectrum
+  </script>
+
+  <script type="text/javascript">
+
+    var deviceID    = "<<YOURID>>"; //YOUR SPARK DEVICE ID
+    var accessToken = "<<YOURTOKEN>>"; //YOUR SPARK ACCESS TOKEN
+    var getFunc = "MAPSlider"; //THE NAME OF YOUR SPARK VARIABLE
+
+    window.setInterval(function() { //THIS ALLOWS THE WEBSITE TO TALK TO THE SPARK CLOUD
+      requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+
+
+    $.getJSON(requestURL, function(json) {  //THIS ASKS THE SPARKCLOUD FOR A VALUE
+        var slider = json.result;           //THE SLIDER VALUE IS PULLED OUT OF THE SPARK CLOUD
+        var color = tinycolor("#f00").spin(slider).toString(); //SLIDER VALUE IS CHANGED INTO A COLOUR
+        console.log(slider); //PRINTING THE VALUE TO THE BROWSER CONSOLE FOR DEBUGGING
+                document.getElementById("spark").style.backgroundColor=color; //CHANGING THE BACKGROUND COLOUR
+               });
+    }, 500); //DELAY OF 500ms BEFORE REFRESHING. DO NOT GO BELOW THIS VALUE, SPARK DOESN'T LIKE IT
+
+  </script>
+
+  <script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
+  </script>
+</html>
