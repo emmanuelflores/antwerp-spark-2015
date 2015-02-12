@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Change Color</title>
+	<style type="text/css">
+
+	body {
+		padding:100px;
+		background:#ffffff;
+	}
+
+	</style>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+	<script type="text/javascript">
+
+
+	var canvas=null;
+	var context=null;
+
+
+	window.onload = function() {
+		canvas=document.getElementById("drawing");
+		context=canvas.getContext("2d");
+		context.beginPath(); 			//This initiates the border
+		context.rect(100,60,175,70);
+		context.fillStyle="#ffffff";
+		context.fill();
+		context.lineWidth=1;			//This sets the width of the border
+		context.strokeStyle="#000000";  //This sets the color of the border
+		context.stroke();
+
+
+	
+	}
+	
+
+
+	function BlueRect () {
+		context.fillStyle="#701be0"; // This changes the rectangle to blue
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+
+
+	function GreenRect () {
+		context.fillStyle="#1be050"; // This function changes the rectangle to green
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+
+	}
+
+	function YellRect () {
+		context.fillStyle="#fcfc00"; // This function changes the rectangle to yellow
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+
+
+	function RedRect () {
+		context.fillStyle="#fc0d00";// This function changes the rectangle to red
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+
+
+	function ImgClr () {
+		context.clearRect(0,0, canvas.width, canvas.height); //This function clears the whole canvas area
+	
+	}	
+
+
+
+
+
+
+
+	</script>
+
+	<meta name="robots" content="noindex">
+
+</head>
+<body>
+	<canvas id="drawing" style="" > </canvas>
+	<input type="button" value="Blue" id="blue" onclick="BlueRect()" />
+	<input type="button" value="Green" id="green" onclick="GreenRect()" />
+	<input type="button" value="Yellow" id="yellow" onclick="YellRect()" />
+	<input type="button" value="Red" id="red" onclick="RedRect()" />
+	<input type="button" value="Click to clear canvas" id="clear" onclick="ImgClr()" />
+	<br><br><br>
+
+</body>
+
+</html>
