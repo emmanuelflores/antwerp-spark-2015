@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <script type="text/javascript">
+            function main() {
+               img=document.getElementById("anigif");
+               Ani=$("ani");
+               Ani.width=500;
+               Ani.height400;
+               Ani.ctx=Ani.getContext('2d');
+               Ani.ctx.drawImage(img,0,0)
+            }
+        </script>
+    </head>
+    <body onload="main()">
+        <img id="anigif" src="explosion.gif">
+        <canvas id="ani"></canvas>
+    </body>
+</html>
