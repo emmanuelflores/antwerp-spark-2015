@@ -1,0 +1,41 @@
+<html>
+<head>
+		<style>
+		h1 {
+		    color: #000;
+			text-align: center;
+			font-family: Gill Sans, Verdana;
+				font-size: 111px;
+				line-height: 114px;
+				text-transform: uppercase;
+				letter-spacing: 2px;
+				font-weight: bold;
+		}
+		</style>
+</head>
+<body>
+	<h1 id="header1">Hello</h1>
+	
+	<button id="hideText" onclick="hideText()">hide Text</button>
+	<button id="showText" onclick="showText()">show Text</button>
+
+
+<script type="text/javascript">
+	var text = document.getElementById("header1");
+	var buttonHide = document.getElementById("hideText");
+	var buttonShow = document.getElementById("showText");
+	
+	function hideText(){
+		text.hidden = true;
+		console.log("hello");
+	}
+	
+	function showText(){
+		text.hidden = false;
+		console.log("ciao");
+	}
+	
+	
+</script>
+</body>
+</html>
