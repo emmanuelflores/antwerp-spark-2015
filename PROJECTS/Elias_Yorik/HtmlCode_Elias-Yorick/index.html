@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Spark Controller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+  
+
+    <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script>
+
+      $(document).ready(function() {
+        var statusTimer = null;
+        var baseURL = "https://api.spark.io/v1/devices/";
+        
+        //--------------------------------------------------------------
+        // START - EDITABLE USER DATA
+        //
+      var accessToken = "bbf257cd5b5e61b5faab6b0282a56de84ee99e58";
+      var coreID = "54ff6f066678574940580167";
+        // App Heading
+        var appHeading = "Driver 9";
+        // Function 1
+        var funcKey1 = "test";
+        var args1 = "";
+        var label1 = "RED FLAG"; // button label 1
+        // Function 2
+        var funcKey2 = "test2";
+        var args2 = "";
+        var label2 = "BLUE FLAG"; // button label 2
+        // Function 3
+        var funcKey3 = "";
+        var args3 = "";
+        var label3 = ""; // button label 3
+        // Function 4
+        var funcKey4 = "";
+        var args4 = "";
+        var label4 = ""; // button label 4
+        //
+        // END - EDITABLE USER DATA
+        //--------------------------------------------------------------
+
+        // Update app heading
+        $("#app-heading").html(appHeading);
+
+        // Update button labels to code definitions
+        // or hide them if not defined.
+        (label1) ? $("#button-1").html(label1) : $("#button-1").hide();
+        (label2) ? $("#button-2").html(label2) : $("#button-2").hide();
+        (label3) ? $("#button-3").html(label3) : $("#button-3").hide();
+        (label4) ? $("#button-4").html(label4) : $("#button-4").hide();
+
+        ////
+        // Alerts
+        ////
+        $("#info-alert").alert();
+        $("#info-alert").affix();
+
+        ////
+        // Methods
+        ////
+        // On method success
+        function onMethodSuccess() {
+          alert = $("#info-alert");
+          alert.text("Success!").removeClass("alert-danger").addClass("alert-success");
+          if(statusTimer != null) {
+            clearTimeout(statusTimer);
+            alert.hide();
+            setTimeout(function() {
+              alert.show();
+              statusTimer = setTimeout(function() {
+                statusTimer = null;
+                alert.hide();
+              }, 1750);
+            }, 250);
+          }
+          else {
+            alert.show();
+            statusTimer = setTimeout(function() {
+              statusTimer = null;
+              alert.hide();
+            }, 2000);
+          }
+        }
+
+        function onMethodFailure(data) {
+          alert = $("#info-alert");
+          alert.text((data)?"Error! "+data:"Error!").removeClass("alert-success").addClass("alert-danger");
+          if(statusTimer != null) {
+            clearTimeout(statusTimer);
+            alert.hide();
+            setTimeout(function() {
+              alert.show();
+              statusTimer = setTimeout(function() {
+                statusTimer = null;
+                alert.hide();
+              }, 1750);
+            }, 250);
+          }
+          else {
+            alert.show();
+            statusTimer = setTimeout(function() {
+              statusTimer = null;
+              alert.hide();
+            }, 2000);
+          }
+        }
+
+        // The base level run method command
+        function doMethod(method, data) {
+          var url = baseURL + coreID + "/" + method;
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+              access_token: accessToken,
+              args: data
+            },
+            dataType: "json"
+          }).success(function(obj) {
+            console.log(obj);
+            (obj.return_value && obj.return_value == 200) ? onMethodSuccess() : onMethodFailure((obj.error)?obj.error:"");
+          }).fail(function(obj) {
+            onMethodFailure();
+          });
+        }
+
+        $("#button-1").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+        $("#button-2").on("click", function () {
+          doMethod(funcKey2, args2);
+        });
+        $("#button-3").on("click", function () {
+          doMethod(funcKey3, args3);
+        });
+        $("#button-4").on("click", function () {
+          doMethod(funcKey4, args4);
+        });
+
+      });
+
+    </script> 
+	
+	
+
+
+
+	
+<script type="text/javascript">
+ var accessToken = "bbf257cd5b5e61b5faab6b0282a56de84ee99e58";
+      var coreID = "54ff6f066678574940580167";
+    var getFunc = "rawclick"; //THE NAME OF YOUR SPARK VARIABLE
+	
+		var canvas=null;
+	var context=null;
+	window.onload = function() {
+		canvas=document.getElementById("drawing");
+		context=canvas.getContext("2d");
+		context.beginPath(); 			//This initiates the border
+		context.rect(600,60,175,70);
+		context.fillStyle="#ffffff";
+		context.fill();
+		context.lineWidth=1;			//This sets the width of the border
+		context.strokeStyle="#000000";  //This sets the color of the border
+		context.stroke();
+	
+	}
+	
+	function BlueRect () {
+		context.fillStyle="#701be0"; // This changes the rectangle to blue
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+	function GreenRect () {
+		context.fillStyle="#1be050"; // This function changes the rectangle to green
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+	function YellRect () {
+		context.fillStyle="#fcfc00"; // This function changes the rectangle to yellow
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+	function RedRect () {
+		context.fillStyle="#FFFFFF";// This function changes the rectangle to red
+		context.fill();
+		context.strokeStyle="#000000";
+		context.stroke();
+	}
+	function ImgClr () {
+		context.clearRect(0,0, canvas.width, canvas.height); //This function clears the whole canvas area
+	
+	}
+	
+	
+    window.setInterval(function() { //THIS ALLOWS THE WEBSITE TO TALK TO THE SPARK CLOUD
+      requestURL = "https://api.spark.io/v1/devices/" + coreID + "/" + getFunc + "/?access_token=" + accessToken;
+    $.getJSON(requestURL, function(json) {  //THIS ASKS THE SPARKCLOUD FOR A VALUE
+        var button = json.result;           //THE SLIDER VALUE IS PULLED OUT OF THE SPARK CLOUD
+        
+              if(button==1)
+			  {
+			  
+			  YellRect();
+			 
+			  }
+			  else if (button==0)
+			  {
+			 
+			  RedRect();
+			  }
+               });
+    }, 500); //DELAY OF 500ms BEFORE REFRESHING. DO NOT GO BELOW THIS VALUE, SPARK DOESN'T LIKE IT
+	
+	
+	
+
+  </script>
+
+	
+
+
+	
+    <div class="container">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4 class="panel-title" id="app-heading">
+            Control
+          </h4>
+        </div>
+		
+		<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+		
+		<div id="buttons" class="panel">
+          <div class="panel-body">
+            <button type="button" class="btn btn-danger btn-lg btn-block" id="button-1">BUTTON 1</button><br/><br/>
+            <button type="button" class="btn btn-primary btn-lg btn-block" id="button-2">BUTTON 2</button><br/><br/>
+            <button type="button" class="btn btn-primary btn-lg" id="button-3">BUTTON 3</button><br/><br/>
+            <button type="button" class="btn btn-primary btn-lg" id="button-4">BUTTON 4</button>
+          </div>
+        </div>
+		
+		</div>
+		</div>
+		
+
+      </div>
+      <div class="alert fade in" id="info-alert" hidden data-spy="affix"></div>
+    </div>
+	
+	<canvas id="drawing" width="1000" height="150" style="" > </canvas>
+	
+           
+  </body>
+</html>
