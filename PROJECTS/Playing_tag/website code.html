@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spark Slider Background</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- To make a #spark id div fullscreen -->
+    <style type="text/css">
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      #spark {
+        min-height: 100%; 
+      }
+    </style>
+
+  </head>
+  <body>
+  
+  <h1> Playing Tag! </h1>
+
+<div id="spark" style="background-color:color">
+&nbsp;
+</div>
+
+<button type="button" onclick="changecolor()") class="btn btn-primary btn-lg" id="tag">TAG</button>
+           
+  </body>
+
+  <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  
+  <script type='text/javascript' src='js/tinycolor.js'>
+  //allows us to use HSL colours, making it easier to go over a spectrum
+  </script>
+
+  <script type="text/javascript">
+
+    var deviceID    = "54ff71066678574928080667"; //YOUR SPARK DEVICE ID
+    var accessToken = "4bcac3d4f0ed49b2ba5547e4ea32281987ecf88f"; //YOUR SPARK ACCESS TOKEN
+    var getFunc = "kleur"; //THE NAME OF YOUR SPARK VARIABLE
+	var tagbutton = document.getElementById("tag");
+	var color1 = tinycolor("green");
+	var color2 = tinycolor("red");
+	
+	function changecolor(){
+	console.log("reek");
+
+	if (status == 1){
+	status = 2;
+	}
+	
+	if (status == 2){
+	status = 1;
+	}
+	
+	var requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+	$.post(requestURL, {params: changedcolor});
+	
+	}
+	
+ window.setInterval(function() { //THIS ALLOWS THE WEBSITE TO TALK TO THE SPARK CLOUD
+      requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+
+    $.getJSON(requestURL, function(json) {  //THIS ASKS THE SPARKCLOUD FOR A VALUE
+        var status = json.result;           //THE SLIDER VALUE IS PULLED OUT OF THE SPARK CLOUD
+        
+		if (status == 1) {
+		var color1 = tinycolor("green");
+		var status = json.result;
+		document.getElementById("spark").style.backgroundColor=color1;
+}
+		else if (status == 2) {
+		var color2 = tinycolor("red");
+		var status = json.result;
+		document.getElementById("spark").style.backgroundColor=color2;
+}
+		console.log(status); //PRINTING THE VALUE TO THE BROWSER CONSOLE FOR DEBUGGING
+});
+
+}, 500);
+
+	</script>
+
+
+  
+
+</html>
