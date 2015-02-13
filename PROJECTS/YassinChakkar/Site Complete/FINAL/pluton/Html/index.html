@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<!--
+ * A Design by GraphBerry
+ * Author: GraphBerry
+ * Author URL: http://graphberry.com
+ * License: http://graphberry.com/pages/license
+-->
+<html lang="en">
+    
+    <head>
+        <meta charset=utf-8>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Project Immersion</title>
+        <!-- Load Roboto font -->
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <!-- Load css styles -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/pluton.css" />
+        <!--[if IE 7]>
+            <link rel="stylesheet" type="text/css" href="css/pluton-ie7.css" />
+        <![endif]-->
+        <link rel="stylesheet" type="text/css" href="css/jquery.cslider.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css" />
+        <link rel="stylesheet" type="text/css" href="css/animate.css" />
+        <!-- Fav and touch icons -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/apple-touch-icon-72.png">
+        <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57.png">
+        <link rel="shortcut icon" href="images/ico/favicon.ico">
+    </head>
+    
+    <body>
+    <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var statusTimer = null;
+        var baseURL = "https://api.spark.io/v1/devices/";
+        
+        //--------------------------------------------------------------
+        // START - EDITABLE USER DATA
+        //
+        var accessToken = "05511b56e0444cd9ddef8b69e2b2a3cb7dac89e7";
+        var coreID = "51ff6e065082554936401387";
+        // App Heading
+        var appHeading = "My App";
+        // Function 1
+        var funcKey1 = "player1";
+        var args1 = "";
+        var label1 = "Connect to this player!"; // button label 1
+        // Function 2
+        var funcKey2 = "player2";
+        var args2 = "";
+        var label2 = "Connect to this player!"; // button label 2
+        // Function 3
+        var funcKey3 = "mexican";
+        var args3 = "";
+        var label3 = "Goal!"; // button label 3
+        // Function 4
+        var funcKey4 = "count";
+        var args4 = "";
+        var label4 = "Countdown"; // button label 4
+        //
+        // END - EDITABLE USER DATA
+        //--------------------------------------------------------------
+
+        // Update app heading
+        $("#app-heading").html(appHeading);
+
+        // Update button labels to code definitions
+        // or hide them if not defined.
+		(label1) ? $("#button-1").html(label1) : $("#button-1").hide(); //Hazard
+		(label2) ? $("#button-2").html(label2) : $("#button-2").hide(); //Courtois
+		(label3) ? $("#button-3").html(label3) : $("#button-3").hide(); //Goal chelsea
+		(label4) ? $("#button-4").html(label4) : $("#button-4").hide(); //Countdown
+		(label3) ? $("#button-5").html(label3) : $("#button-5").hide(); //Goal man city
+		(label1) ? $("#button-6").html(label1) : $("#button-6").hide(); //Kompany
+		(label1) ? $("#button-7").html(label1) : $("#button-7").hide(); //Yaya youré
+		(label1) ? $("#button-8").html(label1) : $("#button-8").hide(); //Aguero
+		(label1) ? $("#button-9").html(label1) : $("#button-9").hide(); // Joe Hart
+		(label2) ? $("#button-10").html(label2) : $("#button-10").hide(); // Willian
+		(label2) ? $("#button-11").html(label2) : $("#button-11").hide(); // Nasri
+		(label2) ? $("#button-12").html(label2) : $("#button-12").hide();	// Oscar
+	    ////
+        // Alerts
+        ////
+        $("#info-alert").alert();
+        $("#info-alert").affix();
+
+        ////
+        // Methods
+        ////
+        // On method success
+        function onMethodSuccess() {
+          alert = $("#info-alert");
+          alert.text("Success!").removeClass("alert-danger").addClass("alert-success");
+          if(statusTimer != null) {
+            clearTimeout(statusTimer);
+            alert.hide();
+            setTimeout(function() {
+              alert.show();
+              statusTimer = setTimeout(function() {
+                statusTimer = null;
+                alert.hide();
+              }, 1750);
+            }, 250);
+          }
+          else {
+            alert.show();
+            statusTimer = setTimeout(function() {
+              statusTimer = null;
+              alert.hide();
+            }, 2000);
+          }
+        }
+
+        function onMethodFailure(data) {
+          alert = $("#info-alert");
+          alert.text((data)?"Error! "+data:"Error!").removeClass("alert-success").addClass("alert-danger");
+          if(statusTimer != null) {
+            clearTimeout(statusTimer);
+            alert.hide();
+            setTimeout(function() {
+              alert.show();
+              statusTimer = setTimeout(function() {
+                statusTimer = null;
+                alert.hide();
+              }, 1750);
+            }, 250);
+          }
+          else {
+            alert.show();
+            statusTimer = setTimeout(function() {
+              statusTimer = null;
+              alert.hide();
+            }, 2000);
+          }
+        }
+
+        // The base level run method command
+        function doMethod(method, data) {
+          var url = baseURL + coreID + "/" + method;
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+              access_token: accessToken,
+              args: data
+            },
+            dataType: "json"
+          }).success(function(obj) {
+            console.log(obj);
+            (obj.return_value && obj.return_value == 200) ? onMethodSuccess() : onMethodFailure((obj.error)?obj.error:"");
+          }).fail(function(obj) {
+            onMethodFailure();
+          });
+        }
+
+        $("#button-1").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+        $("#button-2").on("click", function () {
+          doMethod(funcKey2, args2);
+        });
+        $("#button-3").on("click", function () {
+          doMethod(funcKey3, args3);
+        });
+        $("#button-4").on("click", function () {
+          doMethod(funcKey4, args4);
+        });
+		$("#button-5").on("click", function () {
+          doMethod(funcKey3, args3);
+        });
+		$("#button-6").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+		$("#button-7").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+		$("#button-8").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+		$("#button-9").on("click", function () {
+          doMethod(funcKey1, args1);
+        });
+		$("#button-10").on("click", function () {
+          doMethod(funcKey2, args2);
+        });
+		$("#button-11").on("click", function () {
+          doMethod(funcKey3, args2);
+        });
+		$("#button-12").on("click", function () {
+          doMethod(funcKey3, args2);
+        });
+
+      });
+    </script> 
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a href="#" class="brand">
+                        <img src="images/logo.png" width="120" height="40" alt="Logo" />
+                        <!-- This is website logo -->
+                    </a>
+                    <!-- Navigation button, visible on small resolution -->
+                    <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <i class="icon-menu"></i>
+                    </button>
+                    <!-- Main navigation -->
+                    <div class="nav-collapse collapse pull-right">
+                        <ul class="nav" id="top-navigation">
+                            <li class="active"><a href="#home">Home</a></li>
+                            <li><a href="#service">Live Match</a></li>
+                            <li><a href="#portfolio">Connect</a></li>
+                            <li><a href="#about">sTATISTICS</a></li>
+                            <li><a href="#clients">tWITTER fEED</a></li>
+                            <!-- <li><a href="#price">Price</a></li>
+                            <li><a href="#contact">Contact</a></li> -->
+                        </ul>
+                    </div>
+                    <!-- End main navigation -->
+                </div>
+            </div>
+        </div>
+        <!-- Start home section -->
+        <div id="home">
+            <!-- Start cSlider -->
+            <div id="da-slider" class="da-slider">
+                <div class="triangle"></div>
+                <!-- mask elemet use for masking background image -->
+                <div class="mask"></div>
+                <!-- All slides centred in container element -->
+                <div class="container">
+                    <!-- Start first slide -->
+                    <div class="da-slide">
+                        <h2 class="fittext2">Welcome to Project Immersion</h2>
+                        <h4>Clean & responsive</h4>
+                        <p>The best sports experience you will ever have!</p>
+                        <a href="#" class="da-link button">More info</a>
+                        <div class="da-img">
+                            <img src="images/Slider01.png" alt="image01" width="320">
+                        </div>
+                    </div>
+                    <!-- End first slide -->
+                    <!-- Start second slide -->
+                    <div class="da-slide">
+                        <h2>Use your smartphone!</h2>
+                        <h4>Available on Android and Iphone devices</h4>
+                        <p></p>
+                        <a href="#" class="da-link button">Read more</a>
+                        <div class="da-img">
+                            <img src="images/Slider02.png" width="320" alt="image02">
+                        </div>
+                    </div>
+                    <!-- End second slide -->
+                    <!-- Start third slide -->
+                    <div class="da-slide">
+                        <h2>More then 15 leagues to choose from!</h2>
+                        <h4>Choose youre favorite team and player!</h4>
+                        <p>Barclays Premier league, Jupiler pro league, eredivisie, Bundes Liga, SuperLig and many more!</p>
+                        <a href="#" class="da-link button">Read more</a>
+                        <div class="da-img">
+                            <img src="../../../SITE/CHELSVSMANCITY.png" width="320" alt="image03">
+                        </div>
+                    </div>
+                    <!-- Start third slide -->
+                    <!-- Start cSlide navigation arrows -->
+                    <div class="da-arrows">
+                        <span class="da-arrows-prev"></span>
+                        <span class="da-arrows-next"></span>
+                    </div>
+                    <!-- End cSlide navigation arrows -->
+                </div>
+            </div>
+        </div>
+        <!-- End home section -->
+        <!-- Service section start -->
+        <div class="section primary-section" id="service">
+            <div class="container">
+                <!-- Start title section -->
+                <div class="title">
+                    <h1>Live Match: Chelsea vs Manchester City</h1>
+                    <!-- Section's title goes here -->
+                    <p>&nbsp;</p>
+                    <!--Simple description for section goes here. -->
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <div class="centered service">
+                            <div class="circle-border zoom-in">
+                                <img class="img-circle" src="../../../SITE/chelsea.png" alt="service 1">
+                            </div>
+                            <h3>Chelsea: 2</h3>
+                            <p><button type="button" class="btn btn-navbar" id="button-3">BUTTON 1</button>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="centered service">
+                         <img src="images/Team2.png" alt="team 1">
+                            <!-- <div class="circle-border zoom-in"></div> 
+                            <h3>VS</h3> -->
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="span4">
+                        <div class="centered service">
+                            <div class="circle-border zoom-in">
+                                <img class="img-circle" src="../../../SITE/mancity.png" alt="service 3">
+                            </div>
+                            <h3>Manchester City: 2</h3>
+                            <p> <button type="button" class="btn btn-navbar" id="button-5">BUTTON 1</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Service section end -->
+        <!-- Portfolio section start -->
+        <div class="section secondary-section " id="portfolio">
+            <div class="triangle"></div>
+            <div class="container">
+                <div class=" title">
+                    <h1>Connect to your favorite player</h1>
+                    <p>&nbsp;</p>
+                </div>
+                <ul class="nav nav-pills">
+                    <li class="filter" data-filter="all">
+                        <a href="#noAction">All</a>
+                    </li>
+                   <!-- <li class="filter" data-filter="web">
+                        <a href="#noAction"></a>
+                    </li>
+                    <li class="filter" data-filter="photo">
+                        <a href="#noAction"></a>
+                    </li>
+                    <li class="filter" data-filter="identity">
+                        <a href="#noAction"></a>
+                    </li> -->
+                </ul>
+                <!-- Start details for portfolio project 1 -->
+                <div id="single-project">
+                    <div id="slidingDiv" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="../../../SITE/hazard.jpg" alt="project 1" />
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Eden Hazard</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club: </span>Chelsea</div>
+                                    <div>
+                                        <span>Date of birth:</span> 07/01/1991</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div></div>
+                                </div>
+                                <p> <button type="button" class="btn btn-navbar" id="button-2">BUTTON 1</button>                             </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 1 -->
+                    <!-- Start details for portfolio project 2 -->
+                    <div id="slidingDiv1" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="../../../SITE/courtois.jpg" alt="project 2">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Thibault Courtois</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club: </span>Chelsea</div>
+                                    <div>
+                                        <span>Date of birth</span>11 may 1992</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Left</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p>
+                                 <p><button type="button" class="btn btn-navbar" id="button-1">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 2 -->
+                    <!-- Start details for portfolio project 3 -->
+                    <div id="slidingDiv2" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio03.jpg" alt="project 3">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Vincent Kompany</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club: </span>Manchester City</div>
+                                    <div>
+                                        <span>Date of birth</span>10 april 1986</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-6">BUTTON1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 3 -->
+                    <!-- Start details for portfolio project 4 -->
+                    <div id="slidingDiv3" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio04.png" alt="project 4">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Yaya Touré</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club</span>Manchester City</div>
+                                    <div>
+                                        <span>Date</span>13 may 1983</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-7">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 4 -->
+                    <!-- Start details for portfolio project 5 -->
+                    <div id="slidingDiv4" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio05.png" alt="project 5">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Willian</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club: </span>Chelsea</div>
+                                    <div>
+                                        <span>Date of birth:</span>9 august 1988</div>
+                                    <div>
+                                        <span>Preferred foot:</span>both</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-10">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 5 -->
+                    <!-- Start details for portfolio project 6 -->
+                    <div id="slidingDiv5" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio06.png" alt="project 6">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Samir Nasri</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club</span>Manchester City</div>
+                                    <div>
+                                        <span>Date of birth:</span>26 June 1986</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-11">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 6 -->
+                    <!-- Start details for portfolio project 7 -->
+                    <div id="slidingDiv6" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio07.png" alt="project 7">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Oscar</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club: </span>Chelsea</div>
+                                    <div>
+                                        <span>Date</span>19 september 1991</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-12">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 7 -->
+                    <!-- Start details for portfolio project 8 -->
+                    <div id="slidingDiv7" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio08.png" alt="project 8">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Aguero</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club</span>Manchester City</div>
+                                    <div>
+                                        <span>Date of birth</span>2 june 1988</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-8">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 8 -->
+                    <!-- Start details for portfolio project 9 -->
+                    <div id="slidingDiv8" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <img src="images/Portfolio09.png" alt="project 9">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <h3>Joe Hart</h3>
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Club</span>Manchester City</div>
+                                    <div>
+                                        <span>Date</span>19 april 1986</div>
+                                    <div>
+                                        <span>Preferred foot:</span>Right</div>
+                                    <div>
+                                        <span></span></div>
+                                </div>
+                                <p><button type="button" class="btn btn-navbar" id="button-9">BUTTON 1</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End details for portfolio project 9 -->
+                    <ul id="portfolio-grid" class="thumbnails row">
+                        <li class="span4 mix web">
+                            <div class="thumbnail">
+                                <img src="../../../SITE/hazard.jpg" alt="project 1">
+                                <a href="#single-project" class="more show_hide" rel="#slidingDiv">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Eden Hazard</h3>
+                                <p>Left Midfield</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix photo">
+                            <div class="thumbnail">
+                                <img src="../../../SITE/courtois.jpg" alt="project 2">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv1">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Thibault Courtois</h3>
+                                <p>Keeper</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix identity">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio03.jpg" alt="project 3">
+                                <a href="#single-project" class="more show_hide" rel="#slidingDiv2">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Vincent Kompany</h3>
+                                <p>Central Defense</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix web">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio04.png" alt="project 4">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv3">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Yaya Touré</h3>
+                                <p>Midfield</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix photo">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio05.png" alt="project 5">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv4">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Willian	</h3>
+                                <p>Midfield</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix identity">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio06.png" alt="project 6">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv5">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Samir Nasri</h3>
+                                <p>Midfield</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix web">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio07.png" alt="project 7" />
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv6">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Oscar</h3>
+                                <p>Midfield</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix photo">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio08.png" alt="project 8">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv7">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Aguero</h3>
+                                <p>Attacker</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                        <li class="span4 mix identity">
+                            <div class="thumbnail">
+                                <img src="images/Portfolio09.png" alt="project 9">
+                                <a href="#single-project" class="show_hide more" rel="#slidingDiv8">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <h3>Joe Hart</h3>
+                                <p>Keeper</p>
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio section end -->
+        <!-- About us section start -->
+        <div class="section primary-section" id="about">
+            <div class="triangle"></div>
+            <div class="container">
+                <div class="title">
+                    <h1>Match Statistics</h1>
+                    <p>&nbsp;</p>
+                </div>
+                <div class="row-fluid team">
+                    <div class="span4" id="first-person">
+                        <div class="thumbnail">
+                            <img src="../../../SITE/chelseafield.png" alt="team 1">
+                            <h3>Chelsea</h3>
+                            <ul class="social">
+                                <li>
+                                    <a href="">
+                                        <span class="icon-facebook-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-twitter-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-linkedin-circled"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="mask">
+                                <h2>Chelsea</h2>
+                                <p>Cech, Luis, Terry, Cahill, Ivanovic, Matic, Fabregas, Oscar, Hazard, Willian, Costa
+                             </p>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="span4" id="second-person">
+                        <div class="thumbnail">
+                            <img src="images/Team2.png" alt="team 1">
+                            <p>The match will start in a few moments, count it down!</p>
+                            <button type="button" class="btn btn-navbar" id="button-4">BUTTON 1</button>
+                            <ul class="social">
+                                <li!>
+                                  <!--  <a href="">
+                                        <span class="icon-facebook-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-twitter-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-linkedin-circled"></span>
+                                    </a> 
+                                </li>
+                            </ul>
+                            <div class="mask">
+                                <h2></h2>
+                                <p></p>
+                            </div> -->
+                        </div>
+                    </div> 
+                    <div class="span4" id="third-person">
+                        <div class="thumbnail">
+                            <img src="../../../SITE/mancityfield.png" alt="team 1">
+                            <h3>Manchester City</h3>
+                            <ul class="social">
+                                <li>
+                                    <a href="">
+                                        <span class="icon-facebook-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-twitter-circled"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="">
+                                        <span class="icon-linkedin-circled"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="mask">
+                                <h2>Manchester City</h2>
+   Hart, Kolaroc, Demichelis, Kompany, Zabaleta, Fernandinho, Toure, Silva, Nasri, Aguero, Dzeko</p>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="about-text centered">
+                    <h3>&nbsp;</h3>
+                    <p>&nbsp;</p>
+                </div>
+                <h3>Stats</h3>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <ul class="skills">
+                            <li>
+                                <span class="bar" data-width="80%"></span>
+                                <h3>Pass Accuracy: Chelsea</h3>
+                            </li>
+                            <li>
+                                <span class="bar" data-width="95%"></span>
+                                <h3>Pass Accuracy: Manchester City</h3>
+                            </li>
+                            <li>
+                                <span class="bar" data-width="68%"></span>
+                                <h3>Shot Accuracy: Chelsea</h3>
+                            </li>
+                            <li>
+                                <span class="bar" data-width="70%"></span>
+                                <h3>Shot Accuracy: Manchester City</h3>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="span6">
+                        <div class="highlighted-box center">
+                            <h1>Live Commentary</h1>
+                            <p>Chelsea preserved their five-point lead at the top of the Premier League table courtesy of a 1-1 draw with closest challengers Manchester City at Stamford Bridge this afternoon.
+
+The hosts broke the deadlock five minutes before half time when Branislav Ivanovic and Eden Hazard combined to set up Loic Remy, who swept the ball home from close range.
+
+The lead lasted a matter of minutes, however, as David Silva ensured that the sides would go into the break level when he diverted Sergio Aguero's shot in following a mistake by Thibaut Courtois.</p>
+                            <button class="button button-sp"> Read more</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About us section end -->
+        <div class="section secondary-section">
+            <div class="triangle"></div>
+            <div class="container centered">
+                <p class="large-text">Quick tip! You can use your slider to adjust the intensity of your experience.</p>
+                <a href="#" class="button">Go to manual</a>
+            </div>
+        </div>
+        <!-- Client section start -->
+        <!-- Client section start -->
+        <div id="clients">
+            <div class="section primary-section">
+                <div class="triangle"></div>
+                <div class="container">
+                    <div class="title">
+                        <h1>Twitter Feed</h1>
+                        <p></p>
+                    </div>
+                    <div class="row">
+                        <div class="span4">
+                            <div class="testimonial">
+                                <p>"Hazard beats his man by the byline and fires the ball low across the face of goal, but Willian can't reach to apply the touch. <a href="https://twitter.com/hashtag/CFCLive?src=hash" data-query-source="hashtag_click" dir="ltr">#<strong>CFCLive</strong></a>"</p>
+                                <div class="whopic">
+                                  <div class="arrow"></div>
+                                    <img src="../../../SITE/Twitter-Logo.png" class="centered" alt="client 1">
+                                    <strong>Chelsea FC
+                                    <small></small>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <div class="testimonial">
+                                <p>"Now Willian goes close. He nips inside his marker and curls one just over. A good effort and a good start by the Blues. <a href="https://twitter.com/hashtag/CFCLive?src=hash" data-query-source="hashtag_click" dir="ltr">#<strong>CFCLive</strong></a>"</p>
+                                <div class="whopic">
+                                  <div class="arrow"></div>
+                                    <img src="../../../SITE/Twitter-Logo.png" class="centered" alt="client 2">
+                                    <strong>Chelsea FC
+                                    <small></small>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span4">
+                            <div class="testimonial">
+                                <p>"<a href="https://twitter.com/MCFC" dir="ltr">@<strong>MCFC</strong></a> Promising, keep it up and I think we'll grab a win. Impressed so far! <a href="https://twitter.com/hashtag/Cityview?src=hash" data-query-source="hashtag_click" dir="ltr">#<strong>Cityview</strong></a>."</p>
+                                <div class="whopic">
+                                  <div class="arrow"></div>
+                                    <img src="../../../SITE/Twitter-Logo.png" class="centered" alt="client 3">
+                                    <strong>Dylan
+                                        <small></small>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">&nbsp;</p>
+                </div>
+            </div>
+        </div>
+        <div class="section third-section">
+            <div class="container centered">
+                <div class="sub-section">
+                    <div class="title clearfix">
+                        <div class="pull-left">
+                            <h3>Previous Matches</h3>
+                        </div>
+                        <ul class="client-nav pull-right">
+                            <li id="client-prev"></li>
+                            <li id="client-next"></li>
+                        </ul>
+                    </div>
+                    <ul class="row client-slider" id="clint-slider">
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo01.png" alt="client logo 1">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo02.png" alt="client logo 2">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo03.png" alt="client logo 3">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo04.png" alt="client logo 4">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo05.png" alt="client logo 5">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo02.png" alt="client logo 6">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="images/clients/ClientLogo04.png" alt="client logo 7">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+         <!-- Price section start -->
+       <!-- <div id="price" class="section secondary-section">
+            <div class="container">
+                <div class="title">
+                    <h1>Price</h1>
+                    <p>Duis mollis placerat quam, eget laoreet tellus tempor eu. Quisque dapibus in purus in dignissim.</p>
+                </div>
+                <div class="price-table row-fluid">
+                    <div class="span4 price-column">
+                        <h3>Basic</h3>
+                        <ul class="list">
+                            <li class="price">$19,99</li>
+                            <li><strong>Free</strong> Setup</li>
+                            <li><strong>24/7</strong> Support</li>
+                            <li><strong>5 GB</strong> File Storage</li>
+                        </ul>
+                        <a href="#" class="button button-ps">BUY</a>
+                    </div>
+                    <div class="span4 price-column">
+                        <h3>Pro</h3>
+                        <ul class="list">
+                            <li class="price">$39,99</li>
+                            <li><strong>Free</strong> Setup</li>
+                            <li><strong>24/7</strong> Support</li>
+                            <li><strong>25 GB</strong> File Storage</li>
+                        </ul>
+                        <a href="#" class="button button-ps">BUY</a>
+                    </div>
+                    <div class="span4 price-column">
+                        <h3>Premium</h3>
+                        <ul class="list">
+                            <li class="price">$79,99</li>
+                            <li><strong>Free</strong> Setup</li>
+                            <li><strong>24/7</strong> Support</li>
+                            <li><strong>50 GB</strong> File Storage</li>
+                        </ul>
+                        <a href="#" class="button button-ps">BUY</a>
+                    </div>
+                </div>
+                <div class="centered">
+                    <p class="price-text">We Offer Custom Plans. Contact Us For More Info.</p>
+                    <a href="#contact" class="button">Contact Us</a>
+                </div>
+            </div>
+        </div>-->
+        <!-- Price section end --> 
+        <!-- Newsletter section start -->
+        <div class="section third-section">
+            <div class="container newsletter">
+                <div class="sub-section">
+                    <div class="title clearfix">
+                        <div class="pull-left">
+                            <h3>Newsletter</h3>
+                        </div>
+                    </div>
+                </div>
+                <div id="success-subscribe" class="alert alert-success invisible">
+                    <strong>Well done!</strong>You successfully subscribet to our newsletter.</div>
+                <div class="row-fluid">
+                    <div class="span5">
+                        <p>Do you want to stay up to date with our products? You can subscribe to our newsletter here!</p>
+                    </div>
+                    <div class="span7">
+                        <form class="inline-form">
+                            <input type="email" name="email" id="nlmail" class="span8" placeholder="Enter your email" required />
+                            <button id="subscribe" class="button button-sp">Subscribe</button>
+                        </form>
+                        <div id="err-subscribe" class="error centered">Please provide valid email address.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Newsletter section end -->
+        <!-- Contact section start -->
+        <!-- <div id="contact" class="contact">
+            <div class="section secondary-section">
+                <div class="container">
+                    <div class="title">
+                        <h1>Contact Us</h1>
+                        <p>Duis mollis placerat quam, eget laoreet tellus tempor eu. Quisque dapibus in purus in dignissim.</p>
+                    </div>
+                </div>
+                <div class="map-wrapper">
+                    <div class="map-canvas" id="map-canvas">Loading map...</div>
+                    <div class="container">
+                        <div class="row-fluid">
+                            <div class="span5 contact-form centered">
+                                <h3>Say Hello</h3>
+                                <div id="successSend" class="alert alert-success invisible">
+                                    <strong>Well done!</strong>Your message has been sent.</div>
+                                <div id="errorSend" class="alert alert-error invisible">There was an error.</div>
+                                <form id="contact-form" action="php/mail.php">
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <input class="span12" type="text" id="name" name="name" placeholder="* Your name..." />
+                                            <div class="error left-align" id="err-name">Please enter name.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <input class="span12" type="email" name="email" id="email" placeholder="* Your email..." />
+                                            <div class="error left-align" id="err-email">Please enter valid email adress.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <textarea class="span12" name="comment" id="comment" placeholder="* Comments..."></textarea>
+                                            <div class="error left-align" id="err-comment">Please enter your comment.</div>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <button id="send-mail" class="message-btn">Send message</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="span9 center contact-info">
+                        <p>123 Fifth Avenue, 12th,Belgrade,SRB 11000</p>
+                        <p class="info-mail">ourstudio@somemail.com</p>
+                        <p>+11 234 567 890</p>
+                        <p>+11 286 543 850</p>
+                        <div class="title">
+                            <h3>We Are Social</h3>
+                        </div>
+                    </div>
+                    <div class="row-fluid centered">
+                        <ul class="social">
+                            <li>
+                                <a href="">
+                                    <span class="icon-facebook-circled"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <span class="icon-twitter-circled"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <span class="icon-linkedin-circled"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <span class="icon-pinterest-circled"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <span class="icon-dribbble-circled"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <span class="icon-gplus-circled"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        <!-- Contact section edn -->
+        <!-- Footer section start -->
+        <div class="footer">
+            <p>&copy; 2013 All Rights Reserved</p>
+        </div>
+        <!-- Footer section end -->
+        <!-- ScrollUp button start -->
+        <div class="scrollup">
+            <a href="#">
+                <i class="icon-up-open"></i>
+            </a>
+        </div>
+        <!-- ScrollUp button end -->
+        <!-- Include javascript -->
+        <script src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/jquery.mixitup.js"></script>
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        <script type="text/javascript" src="js/modernizr.custom.js"></script>
+        <script type="text/javascript" src="js/jquery.bxslider.js"></script>
+        <script type="text/javascript" src="js/jquery.cslider.js"></script>
+        <script type="text/javascript" src="js/jquery.placeholder.js"></script>
+        <script type="text/javascript" src="js/jquery.inview.js"></script>
+        <!-- Load google maps api and call initializeMap function defined in app.js -->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;callback=initializeMap"></script>
+        <!-- css3-mediaqueries.js for IE8 or older -->
+        <!--[if lt IE 9]>
+            <script src="js/respond.min.js"></script>
+        <![endif]-->
+        <script type="text/javascript" src="js/app.js"></script>
+    </body>
+</html>
