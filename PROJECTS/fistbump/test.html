@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    function vidplay() {
+       var video = document.getElementById("Video");
+       var button = document.getElementById("play");
+       if (video.paused) {
+          video.play();
+		  video.hidden = false;
+          button.textContent = "||";
+       } else {
+          video.pause();
+		  video.hidden = true;
+          button.textContent = ">";
+       }
+    }
+    function restart() {
+        var video = document.getElementById("Video");
+        video.currentTime = 0;
+    }
+    function skip(value) {
+        var video = document.getElementById("Video");
+        video.currentTime += value;
+    }     
+</script>
+
+</head>
+<body>        
+
+<video id="Video" >
+     <source src="movie.mp4" type="video/mp4" />
+</video>
+
+<div id="buttonbar">
+    <button id="restart" onclick="restart();">[]</button> 
+    <button id="rew" onclick="skip(-10)">&lt;&lt;</button>
+    <button id="play" onclick="vidplay()">&gt;</button>
+    <button id="fastFwd" onclick="skip(10)">&gt;&gt;</button>
+</div>

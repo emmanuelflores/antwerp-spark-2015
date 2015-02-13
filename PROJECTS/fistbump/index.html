@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Spark Slider Background</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <img id="lol" src="explosion.gif" alt="explosion">
+
+
+    <!-- To make a #spark id div fullscreen -->
+    <style type="text/css">
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      #spark {
+        min-height: 100%; 
+      }
+    </style>
+
+  </head>
+  <body>
+
+
+<div id="spark" style="background-color:color">
+&nbsp;
+</div>
+           
+  </body>
+
+  <script type="text/javascript" src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  
+  <script type='text/javascript' src='js/tinycolor.js'>
+  //allows us to use HSL colours, making it easier to go over a spectrum
+  </script>
+
+  <script type="text/javascript">
+
+
+    var myImage = document.getElementById("lol");
+    myImage.style.visibility = 'hidden';
+    
+    var deviceID    = "51ff6f065067545753240187"; //YOUR SPARK DEVICE ID
+    var accessToken = "4757c66fe986309b4e3a2f81b8f5f2e3423e94cb"; //YOUR SPARK ACCESS TOKEN
+    var getFunc = "button"; //THE NAME OF YOUR SPARK VARIABLE
+
+    window.setInterval(function() { //THIS ALLOWS THE WEBSITE TO TALK TO THE SPARK CLOUD
+      requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + getFunc + "/?access_token=" + accessToken;
+
+
+    $.getJSON(requestURL, function(json) {  //THIS ASKS THE SPARKCLOUD FOR A VALUE
+        var button = json.result;           //THE SLIDER VALUE IS PULLED OUT OF THE SPARK CLOUD
+        if (button < 2000) {
+
+          //window.open("http://i.kinja-img.com/gawker-media/image/upload/s--CN7QZfKL--/flxyjhekkycsrgpjelli.gif","_self")
+
+          myImage.style.visibility = 'visible';
+          delay(2000);
+
+        }
+        else {
+          myImage.style.visibility = 'hidden';
+        }
+
+        //var color = tinycolor("#f00").spin(button/20).toString(); //SLIDER VALUE IS CHANGED INTO A COLOUR
+        //console.log(button); //PRINTING THE VALUE TO THE BROWSER CONSOLE FOR DEBUGGING
+        
+        //document.getElementById("spark").style.backgroundColor=color; //CHANGING THE BACKGROUND COLOUR
+        
+        });
+    }, 2000); //DELAY OF 500ms BEFORE REFRESHING. DO NOT GO BELOW THIS VALUE, SPARK DOESN'T LIKE IT
+
+  </script>
+
+  <script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
+  </script>
+</html>
